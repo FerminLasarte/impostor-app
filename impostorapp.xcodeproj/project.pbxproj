@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		00F5C3022EEBBABB008EBBCD /* impostorappApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00F5C3002EEBBABB008EBBCD /* impostorappApp.swift */; };
-		00F5C3032EEBBABB008EBBCD /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00F5C2FF2EEBBABB008EBBCD /* ContentView.swift */; };
 		00F5C3042EEBBABB008EBBCD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 00F5C2FE2EEBBABB008EBBCD /* Assets.xcassets */; };
 		00F5C30B2EEBBB6B008EBBCD /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00F5C30A2EEBBB68008EBBCD /* Player.swift */; };
 		00F5C30D2EEBBB8A008EBBCD /* GameViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00F5C30C2EEBBB8A008EBBCD /* GameViewModel.swift */; };
@@ -38,7 +37,6 @@
 		00F5C2D42EEBB118008EBBCD /* impostorappTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = impostorappTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00F5C2DE2EEBB118008EBBCD /* impostorappUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = impostorappUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00F5C2FE2EEBBABB008EBBCD /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		00F5C2FF2EEBBABB008EBBCD /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		00F5C3002EEBBABB008EBBCD /* impostorappApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = impostorappApp.swift; sourceTree = "<group>"; };
 		00F5C30A2EEBBB68008EBBCD /* Player.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
 		00F5C30C2EEBBB8A008EBBCD /* GameViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewModel.swift; sourceTree = "<group>"; };
@@ -128,7 +126,6 @@
 			isa = PBXGroup;
 			children = (
 				00F5C30A2EEBBB68008EBBCD /* Player.swift */,
-				00F5C2FF2EEBBABB008EBBCD /* ContentView.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -304,7 +301,6 @@
 				00F5C3022EEBBABB008EBBCD /* impostorappApp.swift in Sources */,
 				00F5C30B2EEBBB6B008EBBCD /* Player.swift in Sources */,
 				00F5C30F2EEBBBAF008EBBCD /* SetupView.swift in Sources */,
-				00F5C3032EEBBABB008EBBCD /* ContentView.swift in Sources */,
 				00F5C3112EEBBC05008EBBCD /* RevealView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

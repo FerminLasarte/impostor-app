@@ -12,7 +12,7 @@ class GameViewModel: ObservableObject {
     @Published var gameStarted: Bool = false
     
     // Mock Data (En una app real, esto vendría de un Service/SwiftData)
-    privatelet categories = [
+    private let categories = [
         "Lugares": ["Playa", "Escuela", "Hospital", "Cine"],
         "Comidas": ["Pizza", "Sushi", "Asado", "Ensalada"],
         "Animales": ["Perro", "Gato", "Elefante", "León"]
