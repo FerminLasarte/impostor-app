@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0004FE762EEE3FD90025351D /* GameCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0004FE752EEE3FD30025351D /* GameCategory.swift */; };
+		0004FE782EEE400F0025351D /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0004FE772EEE400C0025351D /* HomeView.swift */; };
 		00F5C3022EEBBABB008EBBCD /* impostorappApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00F5C3002EEBBABB008EBBCD /* impostorappApp.swift */; };
 		00F5C3042EEBBABB008EBBCD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 00F5C2FE2EEBBABB008EBBCD /* Assets.xcassets */; };
 		00F5C30B2EEBBB6B008EBBCD /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00F5C30A2EEBBB68008EBBCD /* Player.swift */; };
@@ -33,6 +35,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0004FE752EEE3FD30025351D /* GameCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameCategory.swift; sourceTree = "<group>"; };
+		0004FE772EEE400C0025351D /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		00F5C2C52EEBB115008EBBCD /* impostorapp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = impostorapp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		00F5C2D42EEBB118008EBBCD /* impostorappTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = impostorappTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00F5C2DE2EEBB118008EBBCD /* impostorappUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = impostorappUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -125,6 +129,7 @@
 		00F5C3062EEBBAD9008EBBCD /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				0004FE752EEE3FD30025351D /* GameCategory.swift */,
 				00F5C30A2EEBBB68008EBBCD /* Player.swift */,
 			);
 			path = Models;
@@ -141,6 +146,7 @@
 		00F5C3082EEBBAFF008EBBCD /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				0004FE772EEE400C0025351D /* HomeView.swift */,
 				00F5C3102EEBBC05008EBBCD /* RevealView.swift */,
 				00F5C30E2EEBBBAB008EBBCD /* SetupView.swift */,
 			);
@@ -298,8 +304,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				00F5C30D2EEBBB8A008EBBCD /* GameViewModel.swift in Sources */,
+				0004FE782EEE400F0025351D /* HomeView.swift in Sources */,
 				00F5C3022EEBBABB008EBBCD /* impostorappApp.swift in Sources */,
 				00F5C30B2EEBBB6B008EBBCD /* Player.swift in Sources */,
+				0004FE762EEE3FD90025351D /* GameCategory.swift in Sources */,
 				00F5C30F2EEBBBAF008EBBCD /* SetupView.swift in Sources */,
 				00F5C3112EEBBC05008EBBCD /* RevealView.swift in Sources */,
 			);
