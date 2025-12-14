@@ -10,7 +10,7 @@ import SwiftUI
 
 struct RevealView: View {
     // Recibimos el ViewModel compartido
-    @ObservedObject var viewModel: GameViewModel
+    @ObservedObject var viewMode: GameViewModel
     
     // Estado local solo para esta vista (no necesita estar en el ViewModel global)
     @State private var isRevealed: Bool = false
