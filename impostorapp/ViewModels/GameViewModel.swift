@@ -1,51 +1,44 @@
 import SwiftUI
+import Observation
 
-class GameViewModel: ObservableObject {
-    // MARK: - Inputs (Configuración)
-    @Published var playerCount: Int = 4
-    @Published var impostorCount: Int = 1
-    @Published var selectedCategory: String = "Lugares"
-    
-    // MARK: - Game State
-    @Published var players: [Player] = []
-    @Published var currentRevealIndex: Int = 0 // Para controlar a quién le toca ver
-    @Published var gameStarted: Bool = false
-    
-    // Mock Data (En una app real, esto vendría de un Service/SwiftData)
+@Observable
+class GameViewModel {
+    // Configuración
+    var playerCount: Int = 4
+    var impostorCount: Int = 1
+    var selectedCategory: String = "Lugares"
+
+    // Estado del juego
+    var players: [Player] = []
+    var currentRevealIndex: Int = 0
+    var gameStarted: Bool = false
+
     private let categories = [
         "Lugares": ["Playa", "Escuela", "Hospital", "Cine"],
         "Comidas": ["Pizza", "Sushi", "Asado", "Ensalada"],
         "Animales": ["Perro", "Gato", "Elefante", "León"]
     ]
-    
-    // MARK: - Logic
+
     func startGame() {
-        // 1. Validaciones básicas
         guard playerCount > impostorCount else { return }
-        
-        // 2. Elegir palabra secreta
-        let words = categories[selectedCategory] ?? ["Error"]
-        let secretWord = words.randomElement() ?? "Nada"
-        
-        // 3. Crear roles
+
+        let secretWord = categories[selectedCategory]?.randomElement() ?? "Nada"
+
         var roles: [GameRole] = []
-        // Llenamos con impostores
-        for _ in 0..<impostorCount { roles.append(.impostor) }
-        // Llenamos el resto con civiles
-        for _ in 0..<(playerCount - impostorCount) { roles.append(.civilian(word: secretWord)) }
-        
-        // 4. Barajar roles (Shuffle) - CRUCIAL para que sea aleatorio
+        roles += Array(repeating: .impostor, count: impostorCount)
+        roles += Array(repeating: .civilian(word: secretWord),
+                       count: playerCount - impostorCount)
+
         roles.shuffle()
-        
-        // 5. Crear jugadores
-        players = roles.enumerated().map { (index, role) in
-            Player(name: "Jugador \(index + 1)", role: role)
+
+        players = roles.enumerated().map {
+            Player(name: "Jugador \($0 + 1)", role: $1)
         }
-        
+
         currentRevealIndex = 0
         gameStarted = true
     }
-    
+
     func resetGame() {
         gameStarted = false
         players = []
