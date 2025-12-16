@@ -77,7 +77,7 @@ struct AuthView: View {
                 .background(.ultraThickMaterial) // Efecto cristal nativo
                 .cornerRadius(25)
                 .padding(.horizontal)
-                .animation(.spring(), value: isLoginMode) // Animación suave al cambiar modo
+                .animation(.bouncy(), value: isLoginMode) // Animación suave al cambiar modo
                 
                 Spacer()
                 
