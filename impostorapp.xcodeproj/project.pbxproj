@@ -15,6 +15,8 @@
 		0004FE812EEF1C1E0025351D /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 0004FE802EEF1C1E0025351D /* FirebaseStorage */; };
 		0004FE842EEF1CBB0025351D /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 0004FE832EEF1CBB0025351D /* FirebaseAnalytics */; };
 		0004FE862EEF1CBB0025351D /* FirebaseAnalyticsCore in Frameworks */ = {isa = PBXBuildFile; productRef = 0004FE852EEF1CBB0025351D /* FirebaseAnalyticsCore */; };
+		0004FE942EF1A9BC0025351D /* AuthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0004FE932EF1A9BC0025351D /* AuthViewModel.swift */; };
+		0004FE962EF1A9DF0025351D /* AuthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0004FE952EF1A9DF0025351D /* AuthView.swift */; };
 		00F5C3022EEBBABB008EBBCD /* impostorappApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00F5C3002EEBBABB008EBBCD /* impostorappApp.swift */; };
 		00F5C3042EEBBABB008EBBCD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 00F5C2FE2EEBBABB008EBBCD /* Assets.xcassets */; };
 		00F5C30B2EEBBB6B008EBBCD /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00F5C30A2EEBBB68008EBBCD /* Player.swift */; };
@@ -44,6 +46,8 @@
 		0004FE752EEE3FD30025351D /* GameCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameCategory.swift; sourceTree = "<group>"; };
 		0004FE772EEE400C0025351D /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		0004FE792EEF1B0B0025351D /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		0004FE932EF1A9BC0025351D /* AuthViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewModel.swift; sourceTree = "<group>"; };
+		0004FE952EF1A9DF0025351D /* AuthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthView.swift; sourceTree = "<group>"; };
 		00F5C2C52EEBB115008EBBCD /* impostorapp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = impostorapp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		00F5C2D42EEBB118008EBBCD /* impostorappTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = impostorappTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00F5C2DE2EEBB118008EBBCD /* impostorappUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = impostorappUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -159,6 +163,7 @@
 		00F5C3072EEBBAF6008EBBCD /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
+				0004FE932EF1A9BC0025351D /* AuthViewModel.swift */,
 				00F5C30C2EEBBB8A008EBBCD /* GameViewModel.swift */,
 			);
 			path = ViewModels;
@@ -167,6 +172,7 @@
 		00F5C3082EEBBAFF008EBBCD /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				0004FE952EF1A9DF0025351D /* AuthView.swift */,
 				0004FE772EEE400C0025351D /* HomeView.swift */,
 				00F5C3102EEBBC05008EBBCD /* RevealView.swift */,
 				00F5C30E2EEBBBAB008EBBCD /* SetupView.swift */,
@@ -337,9 +343,11 @@
 				0004FE782EEE400F0025351D /* HomeView.swift in Sources */,
 				00F5C3022EEBBABB008EBBCD /* impostorappApp.swift in Sources */,
 				00F5C30B2EEBBB6B008EBBCD /* Player.swift in Sources */,
+				0004FE942EF1A9BC0025351D /* AuthViewModel.swift in Sources */,
 				0004FE762EEE3FD90025351D /* GameCategory.swift in Sources */,
 				00F5C30F2EEBBBAF008EBBCD /* SetupView.swift in Sources */,
 				00F5C3112EEBBC05008EBBCD /* RevealView.swift in Sources */,
+				0004FE962EF1A9DF0025351D /* AuthView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -1,10 +1,12 @@
 import SwiftUI
+import FirebaseAuth
 
 struct HomeView: View {
-    @State private var viewModel = GameViewModel()
+    @State private var viewModel = GameViewModel() // Tu ViewModel del juego
+    var authViewModel: AuthViewModel // <--- NUEVO: Inyectamos el Auth
+    
     @State private var navigateToSetup = false
 
-    // Definimos el diseño de la grilla (2 columnas flexibles)
     let columns = [
         GridItem(.flexible(), spacing: 20),
         GridItem(.flexible(), spacing: 20)
@@ -17,7 +19,8 @@ struct HomeView: View {
                     
                     // Header de Bienvenida
                     VStack(alignment: .leading) {
-                        Text("¡Hola, Fermin!")
+                        // Usamos el nombre del usuario de Firebase si existe
+                        Text("¡Hola, \(authViewModel.userSession?.displayName ?? "Jugador")!")
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
                         Text("Vamos a jugar")
@@ -25,11 +28,11 @@ struct HomeView: View {
                     }
                     .padding(.horizontal)
 
-                    Text("Selecciona una categoría")
+                    // ... (El resto de tu código sigue igual: Grid de categorías, etc.) ...
+                     Text("Selecciona una categoría")
                         .font(.headline)
                         .padding(.horizontal)
 
-                    // Grilla de Categorías
                     LazyVGrid(columns: columns, spacing: 20) {
                         ForEach(viewModel.categories) { category in
                             CategoryCard(category: category)
@@ -42,19 +45,28 @@ struct HomeView: View {
                 }
                 .padding(.top)
             }
-            .background(Color(uiColor: .systemGroupedBackground)) // Color de fondo típico de iOS
+            .background(Color(uiColor: .systemGroupedBackground))
             .navigationTitle("Impostor")
-            .navigationBarHidden(true) // Ocultamos el título nativo para usar el nuestro custom
+            .navigationBarHidden(false) // <--- CAMBIO: Mostrar barra para el botón de logout
+            .toolbar { // <--- NUEVO: Botón de logout
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        authViewModel.signOut()
+                    } label: {
+                        Image(systemName: "rectangle.portrait.and.arrow.right")
+                            .foregroundStyle(.red)
+                    }
+                }
+            }
             .navigationDestination(isPresented: $navigateToSetup) {
-                // Pasamos el mismo ViewModel
                 SetupView(viewModel: viewModel)
             }
         }
     }
-
+    
+    // ... (El resto de tus funciones y CategoryCard siguen igual) ...
     func handleCategorySelection(_ category: GameCategory) {
         if category.isCustom {
-            // Aquí podrías abrir una alerta o sheet para crear categoría
             print("Lógica para crear categoría")
         } else {
             viewModel.selectedCategory = category
