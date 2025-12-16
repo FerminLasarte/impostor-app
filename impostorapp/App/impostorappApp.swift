@@ -5,21 +5,25 @@ import FirebaseAuth
 @main
 struct impostorappApp: App {
     
-    // 1. Inicializamos Firebase aquí, ANTES de que se cree cualquier variable
-    init() {
-        FirebaseApp.configure()
-    }
+    // 1. Declaramos la variable SIN inicializarla aquí
+    @State private var authViewModel: AuthViewModel
     
-    // 2. Ahora es seguro crear el ViewModel, porque Firebase ya está configurado
-    @State private var authViewModel = AuthViewModel()
+    init() {
+        // 2. Configuramos Firebase (Ahora sí es lo primero que ocurre)
+        FirebaseApp.configure()
+        
+        // 3. Inicializamos el ViewModel manualmente DESPUÉS de configurar Firebase
+        // Usamos "_authViewModel" para acceder al contenedor del State
+        _authViewModel = State(initialValue: AuthViewModel())
+    }
     
     var body: some Scene {
         WindowGroup {
-            // Verificamos el estado de la sesión
             if authViewModel.userSession != nil {
                 HomeView(authViewModel: authViewModel)
             } else {
-                AuthView()
+                // 4. Pasamos el MISMO viewModel para que la app se entere del login
+                AuthView(viewModel: authViewModel)
             }
         }
     }

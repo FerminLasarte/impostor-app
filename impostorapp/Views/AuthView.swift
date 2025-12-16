@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct AuthView: View {
-    @State private var viewModel = AuthViewModel()
+    var viewModel: AuthViewModel
     
     // Estados locales para el formulario
     @State private var email = ""
@@ -74,7 +74,7 @@ struct AuthView: View {
                     .padding(.top, 10)
                 }
                 .padding(30)
-                .background(.ultraThinMaterial) // Efecto cristal nativo
+                .background(.ultraThickMaterial) // Efecto cristal nativo
                 .cornerRadius(25)
                 .padding(.horizontal)
                 .animation(.spring(), value: isLoginMode) // Animación suave al cambiar modo
