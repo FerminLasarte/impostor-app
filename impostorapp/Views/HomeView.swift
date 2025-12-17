@@ -2,72 +2,93 @@ import SwiftUI
 import FirebaseAuth
 
 struct HomeView: View {
-    @State private var viewModel = GameViewModel() // Tu ViewModel del juego
-    var authViewModel: AuthViewModel // <--- NUEVO: Inyectamos el Auth
+    @State private var viewModel = GameViewModel()
+    var authViewModel: AuthViewModel
     
+    // Estado para controlar la navegación a SetupView desde la Grid
     @State private var navigateToSetup = false
 
-    let columns = [
-        GridItem(.flexible(), spacing: 20),
-        GridItem(.flexible(), spacing: 20)
-    ]
-
     var body: some View {
-        NavigationStack {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 25) {
+        TabView {
+            // PESTAÑA 1: JUGAR
+            NavigationStack {
+                ZStack {
+                    Color(uiColor: .systemGroupedBackground).ignoresSafeArea()
                     
-                    // Header de Bienvenida
-                    VStack(alignment: .leading) {
-                        // Usamos el nombre del usuario de Firebase si existe
-                        Text("¡Hola, \(authViewModel.userSession?.displayName ?? "Jugador")!")
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
-                        Text("Vamos a jugar")
-                            .font(.largeTitle.weight(.bold))
-                    }
-                    .padding(.horizontal)
-
-                    // ... (El resto de tu código sigue igual: Grid de categorías, etc.) ...
-                     Text("Selecciona una categoría")
-                        .font(.headline)
-                        .padding(.horizontal)
-
-                    LazyVGrid(columns: columns, spacing: 20) {
-                        ForEach(viewModel.categories) { category in
-                            CategoryCard(category: category)
-                                .onTapGesture {
-                                    handleCategorySelection(category)
+                    ScrollView {
+                        VStack(spacing: 20) {
+                            // Grid de Categorías
+                            LazyVGrid(columns: [GridItem(.adaptive(minimum: 160), spacing: 20)], spacing: 20) {
+                                ForEach(viewModel.categories) { category in
+                                    CategoryCard(category: category)
+                                        .onTapGesture {
+                                            handleCategorySelection(category)
+                                        }
                                 }
+                            }
+                            .padding()
                         }
                     }
-                    .padding(.horizontal)
-                }
-                .padding(.top)
-            }
-            .background(Color(uiColor: .systemGroupedBackground))
-            .navigationTitle("Impostor")
-            .navigationBarHidden(false) // <--- CAMBIO: Mostrar barra para el botón de logout
-            .toolbar { // <--- NUEVO: Botón de logout
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        authViewModel.signOut()
-                    } label: {
-                        Image(systemName: "rectangle.portrait.and.arrow.right")
-                            .foregroundStyle(.red)
+                    .navigationTitle("Impostor")
+                    .navigationDestination(isPresented: $navigateToSetup) {
+                        SetupView(viewModel: viewModel)
                     }
                 }
             }
-            .navigationDestination(isPresented: $navigateToSetup) {
-                SetupView(viewModel: viewModel)
+            .tabItem {
+                Label("Jugar", systemImage: "gamecontroller.fill")
+            }
+            
+            // PESTAÑA 2: PERFIL
+            NavigationStack {
+                List {
+                    Section {
+                        HStack(spacing: 15) {
+                            ZStack {
+                                Circle().fill(Color.blue.gradient)
+                                Text(authViewModel.userSession?.displayName?.prefix(1).uppercased() ?? "J")
+                                    .font(.title.bold())
+                                    .foregroundStyle(.white)
+                            }
+                            .frame(width: 60, height: 60)
+                            
+                            VStack(alignment: .leading) {
+                                Text(authViewModel.userSession?.displayName ?? "Jugador")
+                                    .font(.headline)
+                                Text(authViewModel.userSession?.email ?? "")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                        .padding(.vertical, 8)
+                    } header: {
+                        Text("Mi Cuenta")
+                    }
+                    
+                    Section {
+                        Button(role: .destructive) {
+                            authViewModel.signOut()
+                        } label: {
+                            HStack {
+                                Image(systemName: "rectangle.portrait.and.arrow.right")
+                                Text("Cerrar Sesión")
+                            }
+                        }
+                    }
+                }
+                .navigationTitle("Perfil")
+            }
+            .tabItem {
+                Label("Perfil", systemImage: "person.crop.circle.fill")
             }
         }
+        .tint(.indigo) // Color de acento estilo Apple
     }
     
-    // ... (El resto de tus funciones y CategoryCard siguen igual) ...
     func handleCategorySelection(_ category: GameCategory) {
         if category.isCustom {
-            print("Lógica para crear categoría")
+            // Aquí iría tu lógica futura para crear categorías
+            print("Crear categoría")
         } else {
             viewModel.selectedCategory = category
             navigateToSetup = true
@@ -75,32 +96,29 @@ struct HomeView: View {
     }
 }
 
-// Subvista para la tarjeta (Componente visual)
+// Tarjeta rediseñada para ser más limpia
 struct CategoryCard: View {
     let category: GameCategory
 
     var body: some View {
-        VStack(spacing: 15) {
-            ZStack {
-                Circle()
-                    .fill(category.color.opacity(0.2))
-                    .frame(width: 60, height: 60)
-                
-                Image(systemName: category.iconName)
-                    .font(.title)
-                    .foregroundStyle(category.color)
-            }
-
+        VStack {
+            Image(systemName: category.iconName)
+                .font(.system(size: 40))
+                .foregroundStyle(category.color.gradient)
+                .frame(height: 50)
+                .shadow(color: category.color.opacity(0.3), radius: 5)
+            
             Text(category.name)
-                .font(.system(.body, design: .rounded))
-                .fontWeight(.bold)
-                .multilineTextAlignment(.center)
+                .font(.headline)
+                .fontDesign(.rounded)
                 .foregroundStyle(.primary)
+                .multilineTextAlignment(.center)
         }
         .frame(maxWidth: .infinity)
-        .frame(height: 160)
+        .padding(.vertical, 30)
+        .padding(.horizontal, 10)
         .background(Color(uiColor: .secondarySystemGroupedBackground))
-        .cornerRadius(20)
-        .shadow(color: Color.black.opacity(0.05), radius: 5, x: 0, y: 2)
+        .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+        .shadow(color: Color.black.opacity(0.05), radius: 8, x: 0, y: 4)
     }
 }
