@@ -24,14 +24,14 @@ class AuthViewModel {
         }
     }
     
-    func signUp(email: String, password: String, name: String) async {
+    func signUp(email: String, password: String, displayName: String) async {
         do {
             // 1. Crear usuario en Auth
             let result = try await Auth.auth().createUser(withEmail: email, password: password)
             
             // 2. Actualizar el nombre visible (Auth)
             let changeRequest = result.user.createProfileChangeRequest()
-            changeRequest.displayName = name
+            changeRequest.displayName = displayName
             try await changeRequest.commitChanges()
             
             // 3. GUARDAR EN FIRESTORE (Base de datos)
@@ -41,7 +41,7 @@ class AuthViewModel {
             // Creamos un Diccionario con los datos
             let userData: [String: Any] = [
                 "uid": userId,
-                "name": name,
+                "displayName": displayName,
                 "email": email,
                 "createdAt": Timestamp(date: Date()),
                 "isOnline": true

@@ -6,7 +6,7 @@ struct AuthView: View {
     // Estados locales para el formulario
     @State private var email = ""
     @State private var password = ""
-    @State private var name = ""
+    @State private var displayName = ""
     @State private var isLoginMode = true // Alternar entre Login y Registro
     
     var body: some View {
@@ -36,7 +36,7 @@ struct AuthView: View {
                 // 3. Tarjeta de Formulario (Estilo Apple Glass)
                 VStack(spacing: 20) {
                     if !isLoginMode {
-                        CustomTextField(icon: "person", placeholder: "Nombre", text: $name)
+                        CustomTextField(icon: "person", placeholder: "Nombre", text: $displayName)
                             .transition(.move(edge: .top).combined(with: .opacity))
                     }
                     
@@ -58,7 +58,7 @@ struct AuthView: View {
                             if isLoginMode {
                                 await viewModel.signIn(email: email, password: password)
                             } else {
-                                await viewModel.signUp(email: email, password: password, name: name)
+                                await viewModel.signUp(email: email, password: password, displayName: displayName)
                             }
                         }
                     } label: {
