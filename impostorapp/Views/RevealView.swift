@@ -143,14 +143,16 @@ struct RevealView: View {
         !isRevealed ? "Ver Rol" : (isLastPlayer ? "Comenzar Juego" : "Siguiente Jugador")
     }
 
+    // En la función handleTap() dentro de RevealView.swift:
+
     private func handleTap() {
         if isRevealed {
             isRevealed = false
             if !isLastPlayer {
                 viewModel.currentRevealIndex += 1
             } else {
-                // Lógica de fin de revelación -> Iniciar Timer o Juego
-                print("Juego Iniciado")
+                // CAMBIO: Navegar al estado de juego
+                path.append("inGameStatus")
             }
         } else {
             isRevealed = true

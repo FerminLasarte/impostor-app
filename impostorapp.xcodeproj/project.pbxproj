@@ -17,6 +17,10 @@
 		0004FE862EEF1CBB0025351D /* FirebaseAnalyticsCore in Frameworks */ = {isa = PBXBuildFile; productRef = 0004FE852EEF1CBB0025351D /* FirebaseAnalyticsCore */; };
 		0004FE942EF1A9BC0025351D /* AuthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0004FE932EF1A9BC0025351D /* AuthViewModel.swift */; };
 		0004FE962EF1A9DF0025351D /* AuthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0004FE952EF1A9DF0025351D /* AuthView.swift */; };
+		0004FE982EF458C30025351D /* MenuSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0004FE972EF458C30025351D /* MenuSelectionView.swift */; };
+		0004FE9A2EF458DF0025351D /* InGameStatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0004FE992EF458DF0025351D /* InGameStatusView.swift */; };
+		0004FE9C2EF45A0B0025351D /* LocalCategorySelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0004FE9B2EF45A0B0025351D /* LocalCategorySelectionView.swift */; };
+		0004FE9E2EF45B110025351D /* ActionCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0004FE9D2EF45B0D0025351D /* ActionCard.swift */; };
 		00F5C3022EEBBABB008EBBCD /* impostorappApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00F5C3002EEBBABB008EBBCD /* impostorappApp.swift */; };
 		00F5C3042EEBBABB008EBBCD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 00F5C2FE2EEBBABB008EBBCD /* Assets.xcassets */; };
 		00F5C30B2EEBBB6B008EBBCD /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00F5C30A2EEBBB68008EBBCD /* Player.swift */; };
@@ -48,6 +52,10 @@
 		0004FE792EEF1B0B0025351D /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		0004FE932EF1A9BC0025351D /* AuthViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewModel.swift; sourceTree = "<group>"; };
 		0004FE952EF1A9DF0025351D /* AuthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthView.swift; sourceTree = "<group>"; };
+		0004FE972EF458C30025351D /* MenuSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuSelectionView.swift; sourceTree = "<group>"; };
+		0004FE992EF458DF0025351D /* InGameStatusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InGameStatusView.swift; sourceTree = "<group>"; };
+		0004FE9B2EF45A0B0025351D /* LocalCategorySelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalCategorySelectionView.swift; sourceTree = "<group>"; };
+		0004FE9D2EF45B0D0025351D /* ActionCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionCard.swift; sourceTree = "<group>"; };
 		00F5C2C52EEBB115008EBBCD /* impostorapp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = impostorapp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		00F5C2D42EEBB118008EBBCD /* impostorappTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = impostorappTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00F5C2DE2EEBB118008EBBCD /* impostorappUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = impostorappUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -172,6 +180,10 @@
 		00F5C3082EEBBAFF008EBBCD /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				0004FE9D2EF45B0D0025351D /* ActionCard.swift */,
+				0004FE9B2EF45A0B0025351D /* LocalCategorySelectionView.swift */,
+				0004FE992EF458DF0025351D /* InGameStatusView.swift */,
+				0004FE972EF458C30025351D /* MenuSelectionView.swift */,
 				0004FE952EF1A9DF0025351D /* AuthView.swift */,
 				0004FE772EEE400C0025351D /* HomeView.swift */,
 				00F5C3102EEBBC05008EBBCD /* RevealView.swift */,
@@ -341,11 +353,15 @@
 			files = (
 				00F5C30D2EEBBB8A008EBBCD /* GameViewModel.swift in Sources */,
 				0004FE782EEE400F0025351D /* HomeView.swift in Sources */,
+				0004FE9C2EF45A0B0025351D /* LocalCategorySelectionView.swift in Sources */,
+				0004FE982EF458C30025351D /* MenuSelectionView.swift in Sources */,
 				00F5C3022EEBBABB008EBBCD /* impostorappApp.swift in Sources */,
 				00F5C30B2EEBBB6B008EBBCD /* Player.swift in Sources */,
 				0004FE942EF1A9BC0025351D /* AuthViewModel.swift in Sources */,
 				0004FE762EEE3FD90025351D /* GameCategory.swift in Sources */,
 				00F5C30F2EEBBBAF008EBBCD /* SetupView.swift in Sources */,
+				0004FE9E2EF45B110025351D /* ActionCard.swift in Sources */,
+				0004FE9A2EF458DF0025351D /* InGameStatusView.swift in Sources */,
 				00F5C3112EEBBC05008EBBCD /* RevealView.swift in Sources */,
 				0004FE962EF1A9DF0025351D /* AuthView.swift in Sources */,
 			);
