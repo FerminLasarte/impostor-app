@@ -63,9 +63,12 @@ struct InGameStatusView: View {
 
                 // Botón Terminar Juego
                 Button {
-                    // Lógica de finalización
+                    // 1. Primero salimos de la pantalla (Navegación)
+                    path = NavigationPath() // Esto es más robusto que removeLast(count) para volver al root
+                    
+                    // 2. Luego reseteamos los datos (con un pequeño delay imperceptible si fuera necesario, o directo)
+                    // Al hacerlo así, damos chance a que SwiftUI empiece a desmontar las vistas
                     viewModel.resetGame()
-                    path.removeLast(path.count) // Vuelve al inicio (MenuSelectionView)
                 } label: {
                     Text("Terminar Partida")
                         .font(.headline.bold())

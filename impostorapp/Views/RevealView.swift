@@ -137,7 +137,15 @@ struct RevealView: View {
     }
     
     // Helpers
-    private var currentPlayer: Player { viewModel.players[viewModel.currentRevealIndex] }
+    private var currentPlayer: Player {
+            // CORRECCIÓN: Verificamos que el índice exista antes de acceder
+            if viewModel.players.indices.contains(viewModel.currentRevealIndex) {
+                return viewModel.players[viewModel.currentRevealIndex]
+            } else {
+                // Retornamos un valor seguro temporal para evitar el crash durante el reset
+                return Player(name: "Cargando...", role: .impostor)
+            }
+        }
     
     private var buttonTitle: String {
         !isRevealed ? "Ver Rol" : (isLastPlayer ? "Comenzar Juego" : "Siguiente Jugador")
