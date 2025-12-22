@@ -146,3 +146,11 @@ struct SettingRow: View {
         .animation(.snappy, value: value)
     }
 }
+
+#Preview {
+    let vm = GameViewModel()
+    // Simulamos que el usuario eligió la primera categoría
+    vm.selectedCategory = vm.categories.first
+    
+    return SetupView(viewModel: vm, path: .constant(NavigationPath()))
+}

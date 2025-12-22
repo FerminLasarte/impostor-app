@@ -71,3 +71,7 @@ class AuthViewModel {
         }
     }
 }
+
+#Preview {
+    AuthView(viewModel: AuthViewModel())
+}

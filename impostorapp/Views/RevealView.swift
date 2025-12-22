@@ -167,3 +167,15 @@ struct RevealView: View {
         }
     }
 }
+
+#Preview {
+    let vm = GameViewModel()
+    // Configuramos datos falsos para la preview
+    vm.players = [
+        Player(name: "Jugador 1", role: .impostor),
+        Player(name: "Jugador 2", role: .civilian(word: "Fútbol"))
+    ]
+    vm.currentRevealIndex = 0 // Probá cambiar a 1 para ver el estado "revelado" si quisieras
+    
+    return RevealView(viewModel: vm, path: .constant(NavigationPath()))
+}

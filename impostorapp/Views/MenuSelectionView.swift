@@ -19,18 +19,24 @@ struct MenuSelectionView: View {
     }
 
     var body: some View {
-        GeometryReader { geometry in
+        GeometryReader {
+            geometry in
             let width = geometry.size.width
             let height = geometry.size.height
             
             ZStack {
                 // 1. Fondo Ambiental
-                BackgroundView(width: width, height: height)
+                BackgroundView(
+                    width: width,
+                    height: height,
+                )
 
                 VStack(spacing: 0) {
                     // 2. Barra Superior (Perfil)
-                    UserProfileHeader(userName: userName, width: width)
-                        .padding(.top, height * 0.02)
+                    UserProfileHeader(
+                        userName: userName,
+                        width: width
+                    ).padding(.top, height * 0.02)
 
                     Spacer()
 
@@ -104,7 +110,16 @@ struct UserProfileHeader: View {
             HStack(spacing: width * 0.03) {
                 ZStack {
                     Circle()
-                        .fill(LinearGradient(colors: [.blue, .purple], startPoint: .topLeading, endPoint: .bottomTrailing))
+                        .fill(
+                            LinearGradient(
+                                colors: [
+                                    .blue,
+                                    .purple
+                                ],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            )
+                        )
                         .frame(width: width * 0.12, height: width * 0.12)
                     Text(userName.prefix(1).uppercased())
                         .font(.system(size: width * 0.05, weight: .bold))
@@ -171,4 +186,12 @@ struct HeroTitleView: View {
                 .tracking(width * 0.01)
         }
     }
+}
+
+#Preview {
+    MenuSelectionView(
+        authViewModel: AuthViewModel(),
+        path: .constant(NavigationPath()),
+        viewModel: GameViewModel()
+    )
 }

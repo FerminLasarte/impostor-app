@@ -61,3 +61,33 @@ struct ScaleButtonStyle: ButtonStyle {
             .brightness(configuration.isPressed ? -0.05 : 0)
     }
 }
+
+#Preview {
+    ZStack {
+        Color.black.ignoresSafeArea()
+        
+        VStack {
+            // Versión Normal
+            ActionCard(
+                title: "Jugar Local",
+                subtitle: "Un dispositivo",
+                icon: "iphone",
+                gradient: LinearGradient(colors: [.blue, .purple], startPoint: .leading, endPoint: .trailing),
+                screenWidth: 390, // Ancho simulado de iPhone
+                action: {}
+            )
+            
+            // Versión "Dark" / Deshabilitada
+            ActionCard(
+                title: "Online",
+                subtitle: "Próximamente",
+                icon: "cloud",
+                gradient: LinearGradient(colors: [.gray.opacity(0.3), .gray.opacity(0.4)], startPoint: .leading, endPoint: .trailing),
+                isDark: true,
+                screenWidth: 390,
+                action: {}
+            )
+        }
+        .padding()
+    }
+}
