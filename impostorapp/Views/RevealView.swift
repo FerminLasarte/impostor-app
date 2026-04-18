@@ -2,156 +2,110 @@ import SwiftUI
 
 struct RevealView: View {
     @Bindable var viewModel: GameViewModel
-    @Binding var path: NavigationPath // Recibimos el path para controlar la salida
+    @Binding var path: NavigationPath
     @State private var isRevealed = false
-    
+
     private var isLastPlayer: Bool {
         viewModel.currentRevealIndex >= viewModel.players.count - 1
     }
 
+    private var currentPlayer: Player {
+        guard viewModel.players.indices.contains(viewModel.currentRevealIndex) else {
+            return Player(name: "Cargando...", role: .impostor)
+        }
+        return viewModel.players[viewModel.currentRevealIndex]
+    }
+
+    private var isImpostor: Bool {
+        currentPlayer.role == .impostor
+    }
+
+    private var ambientColor: Color {
+        isRevealed ? (isImpostor ? .red : .blue) : .indigo
+    }
+
     var body: some View {
-        GeometryReader { geometry in
+        GeometryReader { geo in
             ZStack {
-                // Fondo
-                LinearGradient(
-                    colors: [Color.indigo.opacity(0.4), Color.purple.opacity(0.4), .clear],
-                    startPoint: .topLeading,
-                    endPoint: .bottomTrailing
-                )
-                .ignoresSafeArea()
-                
-                ScrollView {
-                    VStack(spacing: 0) {
-                        
-                        // Header
-                        Text("Jugador \(viewModel.currentRevealIndex + 1) / \(viewModel.players.count)")
-                            .font(.headline)
-                            .foregroundStyle(.secondary)
-                            .padding(.top, geometry.size.height * 0.05)
-                        
-                        Spacer()
-                        
-                        // Tarjeta Responsive (altura relativa)
-                        VStack(spacing: 20) {
-                            if isRevealed {
-                                revealedContent
-                                    .transition(.scale.combined(with: .opacity))
-                            } else {
-                                hiddenContent
-                                    .transition(.opacity)
-                            }
+                Color.black.ignoresSafeArea()
+
+                // Orbe ambiental dinámico según rol
+                Circle()
+                    .fill(ambientColor.opacity(0.28))
+                    .frame(width: geo.size.width * 1.3)
+                    .blur(radius: geo.size.width * 0.38)
+                    .offset(y: -geo.size.height * 0.08)
+                    .animation(.easeInOut(duration: 0.55), value: isRevealed)
+
+                VStack(spacing: 0) {
+                    // Progreso
+                    Text("\(viewModel.currentRevealIndex + 1) / \(viewModel.players.count)")
+                        .font(.system(size: 13, weight: .semibold))
+                        .foregroundStyle(.white.opacity(0.38))
+                        .padding(.top, 14)
+
+                    Spacer()
+
+                    // Tarjeta principal
+                    ZStack {
+                        if isRevealed {
+                            RevealedContent(player: currentPlayer)
+                                .transition(.scale(scale: 0.93).combined(with: .opacity))
+                        } else {
+                            HiddenContent(playerName: currentPlayer.name)
+                                .transition(.opacity)
                         }
-                        .frame(maxWidth: .infinity)
-                        .frame(height: geometry.size.height * 0.55) // 55% de pantalla
-                        .padding()
-                        .background(.ultraThinMaterial)
-                        .clipShape(RoundedRectangle(cornerRadius: 30, style: .continuous))
-                        .shadow(radius: 10)
-                        .padding(.horizontal)
-                        .animation(.spring(response: 0.5, dampingFraction: 0.7), value: isRevealed)
-                        
-                        Spacer()
-                        
-                        // Botón Acción
-                        Button {
-                            handleTap()
-                        } label: {
-                            Text(buttonTitle)
-                                .font(.title3.bold())
-                                .frame(maxWidth: .infinity)
-                                .padding()
-                                .background(isRevealed ? Color.primary : Color.blue)
-                                .foregroundColor(isRevealed ? Color(uiColor: .systemBackground) : .white)
-                                .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
-                        }
-                        .padding(.horizontal, 30)
-                        .padding(.bottom, geometry.size.height * 0.05)
                     }
-                    .frame(minHeight: geometry.size.height)
+                    .frame(maxWidth: .infinity)
+                    .frame(height: geo.size.height * 0.52)
+                    .glassEffect(.regular, in: RoundedRectangle(cornerRadius: 32, style: .continuous))
+                    .padding(.horizontal, 20)
+                    .shadow(
+                        color: isRevealed ? ambientColor.opacity(0.18) : .clear,
+                        radius: 28
+                    )
+                    .animation(.spring(response: 0.45, dampingFraction: 0.74), value: isRevealed)
+
+                    Spacer()
+
+                    // Botón de acción
+                    Button { handleTap() } label: {
+                        Text(buttonTitle)
+                            .font(.system(size: 17, weight: .semibold, design: .rounded))
+                            .foregroundStyle(.white)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 18)
+                            .background(
+                                isRevealed && isLastPlayer
+                                    ? Color.indigo
+                                    : Color.white.opacity(0.12)
+                            )
+                            .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+                            .animation(.easeInOut(duration: 0.2), value: isRevealed)
+                    }
+                    .padding(.horizontal, 20)
+                    .padding(.bottom, 44)
+                    .buttonStyle(ScaleButtonStyle())
                 }
             }
         }
         .navigationTitle("Identidad")
         .navigationBarBackButtonHidden(true)
+        .toolbarColorScheme(.dark, for: .navigationBar)
         .toolbar {
-            // Botón para cancelar partida y volver al menú
             ToolbarItem(placement: .topBarLeading) {
                 Button("Salir") {
                     viewModel.resetGame()
-                    path.removeLast(path.count) // Vuelve a la raíz (HomeView)
+                    path.removeLast(path.count)
                 }
-                .tint(.red)
+                .tint(.red.opacity(0.88))
             }
         }
     }
 
-    // --- Subvistas (Igual que la versión responsive anterior) ---
-    private var revealedContent: some View {
-        VStack(spacing: 15) {
-            Image(systemName: currentPlayer.role == .impostor ? "eye.slash.fill" : "person.fill.checkmark")
-                .font(.system(size: 80))
-                .foregroundStyle(currentPlayer.role == .impostor ? .red : .green)
-                .minimumScaleFactor(0.5)
-            
-            VStack(spacing: 5) {
-                Text(currentPlayer.name)
-                    .font(.title2)
-                    .foregroundStyle(.secondary)
-                
-                Text(currentPlayer.role == .impostor ? "IMPOSTOR" : "CIVIL")
-                    .font(.largeTitle.weight(.heavy))
-                    .fontDesign(.rounded)
-                    .foregroundStyle(currentPlayer.role == .impostor ? .red : .primary)
-                    .minimumScaleFactor(0.5)
-            }
-            
-            Divider().padding(.horizontal)
-            
-            if case let .civilian(word) = currentPlayer.role {
-                VStack {
-                    Text("PALABRA:").font(.caption).bold().foregroundStyle(.secondary)
-                    Text(word).font(.largeTitle.bold()).minimumScaleFactor(0.5)
-                }
-            } else {
-                Text("🤫 Engaña a todos").font(.body)
-            }
-        }
-    }
-
-    private var hiddenContent: some View {
-        VStack(spacing: 20) {
-            Image(systemName: "iphone.gen3.radiowaves.left.and.right")
-                .font(.system(size: 70))
-                .foregroundStyle(.blue)
-            
-            Text(currentPlayer.name)
-                .font(.largeTitle.bold())
-                .fontDesign(.rounded)
-                .minimumScaleFactor(0.5)
-                .lineLimit(1)
-            
-            Text("Toca para ver tu rol")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-        }
-    }
-    
-    // Helpers
-    private var currentPlayer: Player {
-            // CORRECCIÓN: Verificamos que el índice exista antes de acceder
-            if viewModel.players.indices.contains(viewModel.currentRevealIndex) {
-                return viewModel.players[viewModel.currentRevealIndex]
-            } else {
-                // Retornamos un valor seguro temporal para evitar el crash durante el reset
-                return Player(name: "Cargando...", role: .impostor)
-            }
-        }
-    
     private var buttonTitle: String {
-        !isRevealed ? "Ver Rol" : (isLastPlayer ? "Comenzar Juego" : "Siguiente Jugador")
+        !isRevealed ? "Ver Rol" : (isLastPlayer ? "Comenzar Juego" : "Siguiente")
     }
-
-    // En la función handleTap() dentro de RevealView.swift:
 
     private func handleTap() {
         if isRevealed {
@@ -159,7 +113,6 @@ struct RevealView: View {
             if !isLastPlayer {
                 viewModel.currentRevealIndex += 1
             } else {
-                // CAMBIO: Navegar al estado de juego
                 path.append("inGameStatus")
             }
         } else {
@@ -168,14 +121,98 @@ struct RevealView: View {
     }
 }
 
+// MARK: - Subvistas
+
+struct HiddenContent: View {
+    let playerName: String
+
+    var body: some View {
+        VStack(spacing: 22) {
+            Image(systemName: "questionmark.circle")
+                .font(.system(size: 60, weight: .light))
+                .foregroundStyle(.white.opacity(0.45))
+
+            VStack(spacing: 7) {
+                Text(playerName)
+                    .font(.system(size: 26, weight: .bold, design: .rounded))
+                    .foregroundStyle(.white)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.7)
+
+                Text("Toca para ver tu rol")
+                    .font(.system(size: 15))
+                    .foregroundStyle(.white.opacity(0.42))
+            }
+        }
+    }
+}
+
+struct RevealedContent: View {
+    let player: Player
+
+    private var isImpostor: Bool { player.role == .impostor }
+    private var roleColor: Color { isImpostor ? .red : .blue }
+
+    var body: some View {
+        VStack(spacing: 22) {
+            ZStack {
+                Circle()
+                    .fill(roleColor.opacity(0.16))
+                    .frame(width: 88, height: 88)
+                Image(systemName: isImpostor ? "eye.slash.fill" : "checkmark.seal.fill")
+                    .font(.system(size: 38, weight: .medium))
+                    .foregroundStyle(roleColor)
+            }
+            .shadow(color: roleColor.opacity(0.3), radius: 14)
+
+            VStack(spacing: 5) {
+                Text(player.name)
+                    .font(.system(size: 17))
+                    .foregroundStyle(.white.opacity(0.55))
+
+                Text(isImpostor ? "IMPOSTOR" : "CIVIL")
+                    .font(.system(size: 38, weight: .black, design: .rounded))
+                    .foregroundStyle(isImpostor ? .red : .white)
+                    .minimumScaleFactor(0.6)
+            }
+
+            Rectangle()
+                .fill(.white.opacity(0.1))
+                .frame(height: 1)
+                .padding(.horizontal, 28)
+
+            if case let .civilian(word) = player.role {
+                VStack(spacing: 5) {
+                    Text("PALABRA")
+                        .font(.system(size: 11, weight: .bold))
+                        .foregroundStyle(.white.opacity(0.38))
+                        .tracking(2.5)
+                    Text(word)
+                        .font(.system(size: 34, weight: .bold, design: .rounded))
+                        .foregroundStyle(.white)
+                        .minimumScaleFactor(0.5)
+                        .lineLimit(1)
+                }
+            } else {
+                VStack(spacing: 5) {
+                    Text("🤫")
+                        .font(.system(size: 30))
+                    Text("Engaña a todos")
+                        .font(.system(size: 15))
+                        .foregroundStyle(.red.opacity(0.72))
+                }
+            }
+        }
+        .padding(28)
+    }
+}
+
 #Preview {
     let vm = GameViewModel()
-    // Configuramos datos falsos para la preview
     vm.players = [
         Player(name: "Jugador 1", role: .impostor),
         Player(name: "Jugador 2", role: .civilian(word: "Fútbol"))
     ]
-    vm.currentRevealIndex = 0 // Probá cambiar a 1 para ver el estado "revelado" si quisieras
-    
+    vm.currentRevealIndex = 0
     return RevealView(viewModel: vm, path: .constant(NavigationPath()))
 }

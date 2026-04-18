@@ -2,57 +2,80 @@ import SwiftUI
 
 struct AuthView: View {
     var viewModel: AuthViewModel
-    
-    // Estados locales para el formulario
+
     @State private var email = ""
     @State private var password = ""
     @State private var displayName = ""
-    @State private var isLoginMode = true // Alternar entre Login y Registro
-    
+    @State private var isLoginMode = true
+
     var body: some View {
         ZStack {
-            // 1. Fondo Degradado (Coherente con SetupView)
-            LinearGradient(
-                colors: [Color.blue.opacity(0.3), .purple.opacity(0.3), .clear],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
-            .ignoresSafeArea()
-            
-            VStack(spacing: 30) {
-                // 2. Icono y Título
-                VStack(spacing: 15) {
-                    Image(systemName: "person.crop.circle.badge.questionmark") // Icono temático
-                        .font(.system(size: 80))
-                        .foregroundStyle(.indigo)
-                        .symbolEffect(.bounce, value: isLoginMode) // Animación nativa de iOS 17
-                    
-                    Text(isLoginMode ? "Bienvenido de nuevo" : "Crear Cuenta")
-                        .font(.largeTitle.bold())
-                        .fontDesign(.rounded) // Coherente con tu RevealView
+            Color.black.ignoresSafeArea()
+
+            // Orbes ambientales
+            Circle()
+                .fill(Color.indigo.opacity(0.35))
+                .frame(width: 380)
+                .blur(radius: 110)
+                .offset(x: -80, y: -180)
+
+            Circle()
+                .fill(Color.purple.opacity(0.22))
+                .frame(width: 320)
+                .blur(radius: 100)
+                .offset(x: 100, y: 200)
+
+            VStack(spacing: 0) {
+                // Header
+                VStack(spacing: 14) {
+                    Image(systemName: "theatermasks.fill")
+                        .font(.system(size: 64, weight: .medium))
+                        .foregroundStyle(
+                            LinearGradient(
+                                colors: [.white, .indigo.opacity(0.75)],
+                                startPoint: .top,
+                                endPoint: .bottom
+                            )
+                        )
+                        .shadow(color: .indigo.opacity(0.6), radius: 22, y: 8)
+                        .symbolEffect(.bounce, value: isLoginMode)
+
+                    VStack(spacing: 5) {
+                        Text("IMPOSTOR")
+                            .font(.system(size: 36, weight: .black, design: .rounded))
+                            .foregroundStyle(.white)
+                            .tracking(-1)
+
+                        Text(isLoginMode ? "Bienvenido de nuevo" : "Crea tu cuenta")
+                            .font(.system(size: 15))
+                            .foregroundStyle(.white.opacity(0.45))
+                    }
                 }
-                .padding(.top, 40)
-                
-                // 3. Tarjeta de Formulario (Estilo Apple Glass)
-                VStack(spacing: 20) {
+                .padding(.top, 60)
+
+                Spacer()
+
+                // Formulario
+                VStack(spacing: 12) {
                     if !isLoginMode {
-                        CustomTextField(icon: "person", placeholder: "Nombre", text: $displayName)
+                        AuthField(icon: "person", placeholder: "Nombre", text: $displayName)
                             .transition(.move(edge: .top).combined(with: .opacity))
                     }
-                    
-                    CustomTextField(icon: "envelope", placeholder: "Email", text: $email)
+
+                    AuthField(icon: "envelope", placeholder: "Email", text: $email)
                         .textInputAutocapitalization(.never)
                         .keyboardType(.emailAddress)
-                    
-                    CustomSecureField(icon: "lock", placeholder: "Contraseña", text: $password)
-                    
+
+                    AuthSecureField(icon: "lock", placeholder: "Contraseña", text: $password)
+
                     if let error = viewModel.errorMessage {
                         Text(error)
                             .font(.caption)
-                            .foregroundStyle(.red)
+                            .foregroundStyle(.red.opacity(0.85))
                             .multilineTextAlignment(.center)
+                            .padding(.horizontal, 4)
                     }
-                    
+
                     Button {
                         Task {
                             if isLoginMode {
@@ -63,73 +86,86 @@ struct AuthView: View {
                         }
                     } label: {
                         Text(isLoginMode ? "Iniciar Sesión" : "Registrarse")
-                            .font(.headline)
+                            .font(.system(size: 17, weight: .semibold, design: .rounded))
+                            .foregroundStyle(.white)
                             .frame(maxWidth: .infinity)
-                            .padding()
-                            .background(Color.blue)
-                            .foregroundColor(.white)
-                            .cornerRadius(15)
-                            .shadow(radius: 5)
+                            .padding(.vertical, 16)
+                            .background(Color.indigo)
+                            .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+                            .shadow(color: .indigo.opacity(0.4), radius: 12, y: 4)
                     }
-                    .padding(.top, 10)
+                    .buttonStyle(ScaleButtonStyle())
+                    .padding(.top, 4)
                 }
-                .padding(30)
-                .background(.ultraThickMaterial) // Efecto cristal nativo
-                .cornerRadius(25)
-                .padding(.horizontal)
-                .animation(.bouncy(), value: isLoginMode) // Animación suave al cambiar modo
-                
+                .padding(24)
+                .glassEffect(.regular, in: RoundedRectangle(cornerRadius: 28, style: .continuous))
+                .padding(.horizontal, 20)
+                .animation(.bouncy(), value: isLoginMode)
+
                 Spacer()
-                
-                // 4. Botón para alternar modo
+
+                // Cambiar modo
                 Button {
                     withAnimation {
                         isLoginMode.toggle()
                         viewModel.errorMessage = nil
                     }
                 } label: {
-                    Text(isLoginMode ? "¿No tienes cuenta? **Regístrate**" : "¿Ya tienes cuenta? **Entra**")
-                        .foregroundStyle(.primary)
+                    Group {
+                        Text(isLoginMode ? "¿No tienes cuenta? " : "¿Ya tienes cuenta? ")
+                            .foregroundStyle(.white.opacity(0.45))
+                        + Text(isLoginMode ? "Regístrate" : "Entra")
+                            .foregroundStyle(.white.opacity(0.85))
+                            .fontWeight(.semibold)
+                    }
+                    .font(.system(size: 14))
                 }
-                .padding(.bottom, 30)
+                .padding(.bottom, 40)
             }
         }
     }
 }
 
-// Componentes reutilizables para mantener el código limpio
-struct CustomTextField: View {
-    var icon: String
-    var placeholder: String
+struct AuthField: View {
+    let icon: String
+    let placeholder: String
     @Binding var text: String
-    
+
     var body: some View {
-        HStack {
+        HStack(spacing: 12) {
             Image(systemName: icon)
-                .foregroundStyle(.gray)
-                .frame(width: 30)
+                .font(.system(size: 15, weight: .medium))
+                .foregroundStyle(.white.opacity(0.45))
+                .frame(width: 20)
             TextField(placeholder, text: $text)
+                .foregroundStyle(.white)
+                .tint(.indigo)
         }
-        .padding()
-        .background(Color(uiColor: .systemBackground).opacity(0.5))
-        .cornerRadius(12)
+        .padding(.horizontal, 16)
+        .padding(.vertical, 14)
+        .background(.white.opacity(0.08))
+        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
     }
 }
 
-struct CustomSecureField: View {
-    var icon: String
-    var placeholder: String
+struct AuthSecureField: View {
+    let icon: String
+    let placeholder: String
     @Binding var text: String
-    
+
     var body: some View {
-        HStack {
+        HStack(spacing: 12) {
             Image(systemName: icon)
-                .foregroundStyle(.gray)
-                .frame(width: 30)
+                .font(.system(size: 15, weight: .medium))
+                .foregroundStyle(.white.opacity(0.45))
+                .frame(width: 20)
             SecureField(placeholder, text: $text)
+                .foregroundStyle(.white)
+                .tint(.indigo)
         }
-        .padding()
-        .background(Color(uiColor: .systemBackground).opacity(0.5))
-        .cornerRadius(12)
+        .padding(.horizontal, 16)
+        .padding(.vertical, 14)
+        .background(.white.opacity(0.08))
+        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
     }
 }

@@ -1,11 +1,3 @@
-//
-//  MenuSelectionView.swift
-//  impostorapp
-//
-//  Created by Fermin Lasarte on 18/12/2025.
-//
-
-
 import SwiftUI
 import FirebaseAuth
 
@@ -14,177 +6,121 @@ struct MenuSelectionView: View {
     @Binding var path: NavigationPath
     var viewModel: GameViewModel
 
-    var userName: String {
-        authViewModel.userSession?.displayName ?? "Impostor"
+    private var userName: String {
+        authViewModel.userSession?.displayName ?? "Jugador"
     }
 
     var body: some View {
-        GeometryReader {
-            geometry in
-            let width = geometry.size.width
-            let height = geometry.size.height
-            
-            ZStack {
-                // 1. Fondo Ambiental
-                BackgroundView(
-                    width: width,
-                    height: height,
-                )
+        ZStack {
+            Color.black.ignoresSafeArea()
 
-                VStack(spacing: 0) {
-                    // 2. Barra Superior (Perfil)
-                    UserProfileHeader(
-                        userName: userName,
-                        width: width
-                    ).padding(.top, height * 0.02)
+            // Orbes ambientales
+            GeometryReader { geo in
+                Circle()
+                    .fill(Color.indigo.opacity(0.38))
+                    .frame(width: geo.size.width)
+                    .blur(radius: geo.size.width * 0.3)
+                    .offset(x: -geo.size.width * 0.25, y: -geo.size.height * 0.12)
 
+                Circle()
+                    .fill(Color.purple.opacity(0.22))
+                    .frame(width: geo.size.width * 0.9)
+                    .blur(radius: geo.size.width * 0.3)
+                    .offset(x: geo.size.width * 0.32, y: geo.size.height * 0.52)
+            }
+            .ignoresSafeArea()
+
+            VStack(spacing: 0) {
+                // Header
+                HStack {
+                    ProfileChip(name: userName)
                     Spacer()
-
-                    // 3. Título Hero
-                    HeroTitleView(width: width, height: height)
-
-                    Spacer()
-
-                    // 4. Tarjetas de Acción
-                    VStack(spacing: height * 0.02) {
-                        ActionCard(
-                            title: "Jugar Local",
-                            subtitle: "Un dispositivo, varios amigos",
-                            icon: "iphone.gen3",
-                            gradient: LinearGradient(colors: [.blue, .purple], startPoint: .leading, endPoint: .trailing),
-                            screenWidth: width
-                        ) {
-                            path.append("localGame")
-                        }
-                        
-                        ActionCard(
-                            title: "Crear Sala Online",
-                            subtitle: "Próximamente",
-                            icon: "cloud.fill",
-                            gradient: LinearGradient(colors: [Color(uiColor: .systemGray5), Color(uiColor: .systemGray4)], startPoint: .leading, endPoint: .trailing),
-                            isDark: true,
-                            screenWidth: width
-                        ) {
-                            // Aquí iría la lógica futura de online
-                        }
-                    }
-                    .padding(.horizontal, width * 0.06)
-                    .padding(.bottom, height * 0.05)
                 }
+                .padding(.horizontal, 20)
+                .padding(.top, 8)
+
+                Spacer()
+
+                // Hero
+                VStack(spacing: 22) {
+                    Image(systemName: "theatermasks.fill")
+                        .font(.system(size: 80, weight: .medium))
+                        .foregroundStyle(
+                            LinearGradient(
+                                colors: [.white, .indigo.opacity(0.75)],
+                                startPoint: .top,
+                                endPoint: .bottom
+                            )
+                        )
+                        .shadow(color: .indigo.opacity(0.65), radius: 28, y: 10)
+
+                    VStack(spacing: 9) {
+                        Text("IMPOSTOR")
+                            .font(.system(size: 54, weight: .black, design: .rounded))
+                            .foregroundStyle(.white)
+                            .tracking(-1.5)
+
+                        Text("DESCUBRE AL TRAIDOR")
+                            .font(.system(size: 12, weight: .bold))
+                            .foregroundStyle(.white.opacity(0.35))
+                            .tracking(3.5)
+                    }
+                }
+
+                Spacer()
+
+                // Acciones
+                VStack(spacing: 10) {
+                    ActionCard(
+                        title: "Jugar Local",
+                        subtitle: "Un dispositivo, varios amigos",
+                        icon: "iphone.gen3",
+                        isEnabled: true
+                    ) {
+                        path.append("localGame")
+                    }
+
+                    ActionCard(
+                        title: "Sala Online",
+                        subtitle: "Próximamente",
+                        icon: "wifi",
+                        isEnabled: false
+                    ) {}
+                }
+                .padding(.horizontal, 20)
+                .padding(.bottom, 44)
             }
         }
         .navigationBarHidden(true)
     }
 }
 
-// --- Componentes Visuales Extraídos para Limpieza ---
+struct ProfileChip: View {
+    let name: String
 
-struct BackgroundView: View {
-    let width: CGFloat
-    let height: CGFloat
-    
     var body: some View {
-        ZStack {
-            Color.black.ignoresSafeArea()
-            Circle()
-                .fill(Color.indigo.opacity(0.4))
-                .frame(width: width * 0.8, height: width * 0.8)
-                .blur(radius: width * 0.25)
-                .offset(x: -width * 0.25, y: -height * 0.25)
-            Circle()
-                .fill(Color.blue.opacity(0.3))
-                .frame(width: width * 0.8, height: width * 0.8)
-                .blur(radius: width * 0.25)
-                .offset(x: width * 0.25, y: height * 0.25)
-        }
-        .ignoresSafeArea()
-    }
-}
-
-struct UserProfileHeader: View {
-    let userName: String
-    let width: CGFloat
-    
-    var body: some View {
-        HStack {
-            HStack(spacing: width * 0.03) {
-                ZStack {
-                    Circle()
-                        .fill(
-                            LinearGradient(
-                                colors: [
-                                    .blue,
-                                    .purple
-                                ],
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
-                            )
-                        )
-                        .frame(width: width * 0.12, height: width * 0.12)
-                    Text(userName.prefix(1).uppercased())
-                        .font(.system(size: width * 0.05, weight: .bold))
-                        .foregroundStyle(.white)
-                }
-                VStack(alignment: .leading, spacing: 2) {
-                    Text("BIENVENIDO")
-                        .font(.system(size: width * 0.025, weight: .black))
-                        .foregroundStyle(.gray)
-                        .tracking(1)
-                    Text(userName)
-                        .font(.system(size: width * 0.045, weight: .bold))
-                        .foregroundStyle(.white)
-                }
-            }
-            .padding(.horizontal, width * 0.04)
-            .padding(.vertical, width * 0.02)
-            .background(Color.white.opacity(0.1))
-            .clipShape(Capsule())
-            
-            Spacer()
-        }
-        .padding(.horizontal, width * 0.06)
-    }
-}
-
-struct HeroTitleView: View {
-    let width: CGFloat
-    let height: CGFloat
-    
-    var body: some View {
-        VStack(spacing: -height * 0.015) {
+        HStack(spacing: 9) {
             ZStack {
-                Image(systemName: "theatermasks.fill")
-                    .font(.system(size: width * 0.35))
-                    .foregroundStyle(.blue.opacity(0.5))
-                    .blur(radius: width * 0.05)
-                    .offset(y: height * 0.015)
-                
-                Image(systemName: "theatermasks.fill")
-                    .font(.system(size: width * 0.35))
-                    .foregroundStyle(
+                Circle()
+                    .fill(
                         LinearGradient(
-                            colors: [.white, .indigo],
+                            colors: [.indigo, .blue],
                             startPoint: .topLeading,
                             endPoint: .bottomTrailing
                         )
                     )
-                    .shadow(color: .indigo.opacity(0.5), radius: width * 0.05, x: 0, y: height * 0.015)
+                    .frame(width: 30, height: 30)
+                Text(name.prefix(1).uppercased())
+                    .font(.system(size: 13, weight: .bold))
+                    .foregroundStyle(.white)
             }
-            .padding(.bottom, height * 0.03)
-
-            Text("IMPOSTOR")
-                .font(.system(size: width * 0.16))
-                .fontWeight(.black)
-                .fontDesign(.rounded)
-                .foregroundStyle(.white)
-                .tracking(-2)
-                .shadow(color: .blue.opacity(0.8), radius: width * 0.04)
-            
-            Text("DESCUBRE AL TRAIDOR")
-                .font(.system(size: width * 0.035, weight: .bold))
-                .foregroundStyle(.gray)
-                .tracking(width * 0.01)
+            Text(name)
+                .font(.system(size: 14, weight: .semibold))
+                .foregroundStyle(.white.opacity(0.88))
         }
+        .padding(.horizontal, 12)
+        .padding(.vertical, 7)
+        .glassEffect(.regular, in: Capsule())
     }
 }
 

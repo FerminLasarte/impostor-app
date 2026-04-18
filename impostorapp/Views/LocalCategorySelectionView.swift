@@ -1,77 +1,71 @@
-//
-//  LocalCategorySelectionView.swift
-//  impostorapp
-//
-//  Created by Fermin Lasarte on 18/12/2025.
-//
-
-
 import SwiftUI
 
 struct LocalCategorySelectionView: View {
     @Bindable var viewModel: GameViewModel
     @Binding var path: NavigationPath
-    
-    // Grid adaptativo para las tarjetas
-    let columns = [GridItem(.adaptive(minimum: 150), spacing: 20)]
+
+    let columns = [GridItem(.adaptive(minimum: 155), spacing: 12)]
 
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 20) {
-                Text("Elige un Tema")
-                    .font(.largeTitle.bold())
-                    .padding(.horizontal)
-                    .padding(.top)
-                
-                LazyVGrid(columns: columns, spacing: 20) {
+        ZStack {
+            Color.black.ignoresSafeArea()
+
+            Circle()
+                .fill(Color.indigo.opacity(0.22))
+                .frame(width: 380)
+                .blur(radius: 110)
+                .offset(x: 60, y: -80)
+                .ignoresSafeArea()
+
+            ScrollView {
+                LazyVGrid(columns: columns, spacing: 12) {
                     ForEach(viewModel.categories) { category in
                         CategoryCard(category: category)
                             .onTapGesture {
-                                if category.isCustom {
-                                    // Aquí iría la lógica para crear categoría (futuro)
-                                    print("Crear nueva categoría")
-                                } else {
-                                    viewModel.selectedCategory = category
-                                    // Al añadir la categoría al path, el NavigationStack de HomeView
-                                    // detectará el tipo GameCategory y navegará a SetupView
-                                    path.append(category)
-                                }
+                                guard !category.isCustom else { return }
+                                viewModel.selectedCategory = category
+                                path.append(category)
                             }
                     }
                 }
-                .padding()
+                .padding(20)
+                .padding(.top, 4)
             }
         }
-        .navigationTitle("Categorías")
-        .navigationBarTitleDisplayMode(.inline)
-        .background(Color(uiColor: .systemGroupedBackground))
+        .navigationTitle("Elige un tema")
+        .navigationBarTitleDisplayMode(.large)
+        .toolbarColorScheme(.dark, for: .navigationBar)
     }
 }
 
-// Subcomponente visual para la tarjeta
 struct CategoryCard: View {
     let category: GameCategory
 
     var body: some View {
-        VStack {
-            Image(systemName: category.iconName)
-                .font(.system(size: 40))
-                .foregroundStyle(category.color.gradient)
-                .frame(height: 50)
-                .shadow(color: category.color.opacity(0.3), radius: 5)
-            
+        VStack(spacing: 14) {
+            ZStack {
+                Circle()
+                    .fill(category.color.opacity(0.16))
+                    .frame(width: 66, height: 66)
+                Image(systemName: category.iconName)
+                    .font(.system(size: 28, weight: .medium))
+                    .foregroundStyle(category.color)
+            }
+            .shadow(color: category.color.opacity(0.25), radius: 12)
+
             Text(category.name)
-                .font(.headline)
-                .fontDesign(.rounded)
-                .foregroundStyle(.primary)
+                .font(.system(size: 15, weight: .semibold, design: .rounded))
+                .foregroundStyle(.white)
                 .multilineTextAlignment(.center)
+                .lineLimit(2)
         }
         .frame(maxWidth: .infinity)
-        .padding(.vertical, 30)
-        .padding(.horizontal, 10)
-        .background(Color(uiColor: .secondarySystemGroupedBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
-        .shadow(color: Color.black.opacity(0.05), radius: 8, x: 0, y: 4)
+        .padding(.vertical, 26)
+        .padding(.horizontal, 12)
+        .glassEffect(
+            .regular.tint(category.color.opacity(0.08)),
+            in: RoundedRectangle(cornerRadius: 24, style: .continuous)
+        )
     }
 }
 
