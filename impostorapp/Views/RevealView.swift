@@ -16,71 +16,70 @@ struct RevealView: View {
         return viewModel.players[viewModel.currentRevealIndex]
     }
 
-    private var isImpostor: Bool {
-        currentPlayer.role == .impostor
-    }
-
-    private var ambientColor: Color {
-        isRevealed ? (isImpostor ? .red : .blue) : .indigo
-    }
+    private var isImpostor: Bool { currentPlayer.role == .impostor }
+    private var roleColor: Color { isImpostor ? .red : .cyan }
+    private var ambientColor: Color { isRevealed ? roleColor : .indigo }
 
     var body: some View {
         GeometryReader { geo in
             ZStack {
                 Color.black.ignoresSafeArea()
 
-                // Orbe ambiental dinámico según rol
+                // Orbe ambiental vívido
                 Circle()
-                    .fill(ambientColor.opacity(0.28))
-                    .frame(width: geo.size.width * 1.3)
-                    .blur(radius: geo.size.width * 0.38)
-                    .offset(y: -geo.size.height * 0.08)
-                    .animation(.easeInOut(duration: 0.55), value: isRevealed)
+                    .fill(ambientColor.opacity(0.5))
+                    .frame(width: geo.size.width * 1.5)
+                    .blur(radius: geo.size.width * 0.3)
+                    .offset(y: -geo.size.height * 0.1)
+                    .animation(.easeInOut(duration: 0.5), value: isRevealed)
 
                 VStack(spacing: 0) {
                     // Progreso
                     Text("\(viewModel.currentRevealIndex + 1) / \(viewModel.players.count)")
                         .font(.system(size: 13, weight: .semibold))
-                        .foregroundStyle(.white.opacity(0.38))
+                        .foregroundStyle(.white.opacity(0.55))
                         .padding(.top, 14)
 
                     Spacer()
 
-                    // Tarjeta principal
+                    // Tarjeta sólida con borde de color
                     ZStack {
+                        RoundedRectangle(cornerRadius: 32, style: .continuous)
+                            .fill(Color(white: 0.08))
+
+                        RoundedRectangle(cornerRadius: 32, style: .continuous)
+                            .stroke(
+                                isRevealed ? roleColor.opacity(0.65) : Color.white.opacity(0.1),
+                                lineWidth: isRevealed ? 2 : 1
+                            )
+                            .animation(.easeInOut(duration: 0.3), value: isRevealed)
+
                         if isRevealed {
                             RevealedContent(player: currentPlayer)
-                                .transition(.scale(scale: 0.93).combined(with: .opacity))
+                                .transition(.scale(scale: 0.88).combined(with: .opacity))
                         } else {
                             HiddenContent(playerName: currentPlayer.name)
                                 .transition(.opacity)
                         }
                     }
                     .frame(maxWidth: .infinity)
-                    .frame(height: geo.size.height * 0.52)
-                    .glassEffect(.regular, in: RoundedRectangle(cornerRadius: 32, style: .continuous))
+                    .frame(height: geo.size.height * 0.54)
                     .padding(.horizontal, 20)
-                    .shadow(
-                        color: isRevealed ? ambientColor.opacity(0.18) : .clear,
-                        radius: 28
-                    )
-                    .animation(.spring(response: 0.45, dampingFraction: 0.74), value: isRevealed)
+                    .shadow(color: isRevealed ? roleColor.opacity(0.35) : .black.opacity(0.5), radius: 32, y: 8)
+                    .animation(.spring(response: 0.42, dampingFraction: 0.72), value: isRevealed)
 
                     Spacer()
 
-                    // Botón de acción
+                    // Botón acción
                     Button { handleTap() } label: {
                         Text(buttonTitle)
-                            .font(.system(size: 17, weight: .semibold, design: .rounded))
+                            .font(.system(size: 17, weight: .bold, design: .rounded))
                             .foregroundStyle(.white)
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 18)
-                            .background(
-                                isRevealed && isLastPlayer
-                                    ? Color.indigo
-                                    : Color.white.opacity(0.12)
-                            )
+                            .background(buttonColor)
                             .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+                            .shadow(color: buttonColor.opacity(0.5), radius: 14, y: 5)
                             .animation(.easeInOut(duration: 0.2), value: isRevealed)
                     }
                     .padding(.horizontal, 20)
@@ -98,13 +97,18 @@ struct RevealView: View {
                     viewModel.resetGame()
                     path.removeLast(path.count)
                 }
-                .tint(.red.opacity(0.88))
+                .tint(.red)
             }
         }
     }
 
     private var buttonTitle: String {
         !isRevealed ? "Ver Rol" : (isLastPlayer ? "Comenzar Juego" : "Siguiente")
+    }
+
+    private var buttonColor: Color {
+        guard isRevealed else { return Color(white: 0.2) }
+        return isLastPlayer ? .indigo : Color(white: 0.22)
     }
 
     private func handleTap() {
@@ -127,21 +131,26 @@ struct HiddenContent: View {
     let playerName: String
 
     var body: some View {
-        VStack(spacing: 22) {
-            Image(systemName: "questionmark.circle")
-                .font(.system(size: 60, weight: .light))
-                .foregroundStyle(.white.opacity(0.45))
+        VStack(spacing: 24) {
+            ZStack {
+                Circle()
+                    .fill(Color.white.opacity(0.06))
+                    .frame(width: 90, height: 90)
+                Image(systemName: "questionmark")
+                    .font(.system(size: 38, weight: .thin))
+                    .foregroundStyle(.white.opacity(0.7))
+            }
 
-            VStack(spacing: 7) {
+            VStack(spacing: 8) {
                 Text(playerName)
-                    .font(.system(size: 26, weight: .bold, design: .rounded))
+                    .font(.system(size: 28, weight: .bold, design: .rounded))
                     .foregroundStyle(.white)
                     .lineLimit(1)
-                    .minimumScaleFactor(0.7)
+                    .minimumScaleFactor(0.65)
 
                 Text("Toca para ver tu rol")
                     .font(.system(size: 15))
-                    .foregroundStyle(.white.opacity(0.42))
+                    .foregroundStyle(.white.opacity(0.5))
             }
         }
     }
@@ -151,59 +160,80 @@ struct RevealedContent: View {
     let player: Player
 
     private var isImpostor: Bool { player.role == .impostor }
-    private var roleColor: Color { isImpostor ? .red : .blue }
+    private var roleColor: Color { isImpostor ? .red : .cyan }
 
     var body: some View {
-        VStack(spacing: 22) {
+        VStack(spacing: 0) {
+            Spacer()
+
+            // Icono con glow vívido
             ZStack {
                 Circle()
-                    .fill(roleColor.opacity(0.16))
-                    .frame(width: 88, height: 88)
+                    .fill(roleColor.opacity(0.18))
+                    .frame(width: 96, height: 96)
+                Circle()
+                    .fill(roleColor.opacity(0.08))
+                    .frame(width: 120, height: 120)
                 Image(systemName: isImpostor ? "eye.slash.fill" : "checkmark.seal.fill")
-                    .font(.system(size: 38, weight: .medium))
+                    .font(.system(size: 42, weight: .medium))
                     .foregroundStyle(roleColor)
             }
-            .shadow(color: roleColor.opacity(0.3), radius: 14)
+            .shadow(color: roleColor.opacity(0.7), radius: 22)
 
-            VStack(spacing: 5) {
+            Spacer().frame(height: 18)
+
+            // Nombre y rol
+            VStack(spacing: 4) {
                 Text(player.name)
-                    .font(.system(size: 17))
-                    .foregroundStyle(.white.opacity(0.55))
+                    .font(.system(size: 16, weight: .medium))
+                    .foregroundStyle(.white.opacity(0.6))
 
                 Text(isImpostor ? "IMPOSTOR" : "CIVIL")
-                    .font(.system(size: 38, weight: .black, design: .rounded))
-                    .foregroundStyle(isImpostor ? .red : .white)
+                    .font(.system(size: 42, weight: .black, design: .rounded))
+                    .foregroundStyle(roleColor)
+                    .shadow(color: roleColor.opacity(0.5), radius: 12)
                     .minimumScaleFactor(0.6)
             }
 
-            Rectangle()
-                .fill(.white.opacity(0.1))
-                .frame(height: 1)
-                .padding(.horizontal, 28)
+            Spacer().frame(height: 22)
 
+            // Divisor con color
+            Rectangle()
+                .fill(roleColor.opacity(0.3))
+                .frame(height: 1)
+                .padding(.horizontal, 24)
+
+            Spacer().frame(height: 22)
+
+            // Palabra o mensaje impostor
             if case let .civilian(word) = player.role {
-                VStack(spacing: 5) {
-                    Text("PALABRA")
+                VStack(spacing: 7) {
+                    Text("TU PALABRA")
                         .font(.system(size: 11, weight: .bold))
-                        .foregroundStyle(.white.opacity(0.38))
-                        .tracking(2.5)
+                        .foregroundStyle(.white.opacity(0.45))
+                        .tracking(3)
+
                     Text(word)
-                        .font(.system(size: 34, weight: .bold, design: .rounded))
+                        .font(.system(size: 40, weight: .black, design: .rounded))
                         .foregroundStyle(.white)
-                        .minimumScaleFactor(0.5)
+                        .shadow(color: Color.cyan.opacity(0.5), radius: 10)
+                        .minimumScaleFactor(0.45)
                         .lineLimit(1)
                 }
             } else {
-                VStack(spacing: 5) {
+                VStack(spacing: 8) {
                     Text("🤫")
-                        .font(.system(size: 30))
+                        .font(.system(size: 38))
                     Text("Engaña a todos")
-                        .font(.system(size: 15))
-                        .foregroundStyle(.red.opacity(0.72))
+                        .font(.system(size: 16, weight: .semibold))
+                        .foregroundStyle(.red)
+                        .shadow(color: .red.opacity(0.4), radius: 6)
                 }
             }
+
+            Spacer()
         }
-        .padding(28)
+        .padding(.horizontal, 28)
     }
 }
 
